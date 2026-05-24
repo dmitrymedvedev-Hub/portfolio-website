@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdallah | Full-Stack Developer</title>
+    <meta name="description"
+        content="Portfolio of Abdallah, a full-stack web developer building clean frontend experiences and Node.js backend systems.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="site-shell text-slate-900 antialiased">
+    <nav class="site-nav fixed inset-x-0 top-0 z-50">
+        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="#home" class="brand-mark text-xl font-extrabold tracking-tight uppercase">
+                Abdallah
+            </a>
+            <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden" aria-label="Toggle navigation menu">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:hidden">
+            <div class="flex flex-col gap-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
+                <a href="#home" class="mobile-link">Home</a>
+                <a href="#about" class="mobile-link">About</a>
+                <a href="#skills" class="mobile-link">Skills</a>
+                <a href="#projects" class="mobile-link">Projects</a>
+                <a href="#contact" class="mobile-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header id="home" class="hero-section px-4 pt-32 pb-20 lg:pt-40 lg:pb-28">
+            <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+                <div class="reveal space-y-6">
+                    <div class="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700">
+                        Available for freelance and full-time work
+                    </div>
+                    <div class="space-y-4">
+                        <h1 class="max-w-3xl text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
+                            Building polished web products with <span class="accent-text">clean code</span> and solid backend systems.
+                        </h1>
+                        <p class="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+                            I design responsive frontend experiences and connect them to Express.js APIs with MySQL so the full stack stays simple, maintainable, and fast.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#projects" class="primary-button">View Projects</a>
+                        <a href="#contact" class="secondary-button">Contact Me</a>
+                    </div>
+                </div>
+                <div class="reveal reveal-delay-120 flex justify-center">
+                    <div class="portrait-card relative h-72 w-72 sm:h-80 sm:w-80">
+                        <div class="portrait-shape"></div>
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=900"
+                            alt="Portrait of Abdallah"
+                            class="portrait-image absolute inset-0 h-full w-full rounded-[2rem] object-cover shadow-2xl">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="about" class="section-block bg-white px-4">
+            <div class="mx-auto max-w-4xl">
+                <div class="section-heading">
+                    <span class="section-kicker">About</span>
+                    <h2>Focused on practical, maintainable full-stack work.</h2>
+                </div>
+                <div class="content-card prose prose-lg max-w-none text-slate-600">
+                    <p>
+                        I build projects that keep the frontend and backend separated without making the developer experience messy.
+                        The frontend stays simple and responsive, while the backend handles APIs, validation, and database access.
+                    </p>
+                    <p>
+                        This setup is designed to be easy to extend later, whether you want to add authentication, dashboards, or admin tools.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section-block px-4">
+            <div class="mx-auto max-w-6xl">
+                <div class="section-heading text-center">
+                    <span class="section-kicker">Skills</span>
+                    <h2>Frontend, backend, and database layers that stay clean.</h2>
+                </div>
+                <div class="grid gap-8 md:grid-cols-2">
+                    <article class="content-card">
+                        <h3 class="card-title"><i data-lucide="layout-grid"></i> Frontend</h3>
+                        <div class="tag-list">
+                            <span class="tag-pill">HTML5</span>
+                            <span class="tag-pill">CSS3</span>
+                            <span class="tag-pill">Tailwind CSS</span>
+                            <span class="tag-pill">JavaScript</span>
+                            <span class="tag-pill">Responsive UI</span>
+                        </div>
+                    </article>
+                    <article class="content-card">
+                        <h3 class="card-title"><i data-lucide="database"></i> Backend</h3>
+                        <div class="tag-list">
+                            <span class="tag-pill">Node.js</span>
+                            <span class="tag-pill">Express.js</span>
+                            <span class="tag-pill">MySQL</span>
+                            <span class="tag-pill">REST API</span>
+                            <span class="tag-pill">CORS</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section-block bg-white px-4">
+            <div class="mx-auto max-w-6xl">
+                <div class="section-heading text-center">
+                    <span class="section-kicker">Projects</span>
+                    <h2>Projects load from the backend and can be expanded later.</h2>
+                </div>
+                <div id="projects-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-block px-4">
+            <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.95fr_1.05fr]">
+                <div class="space-y-6">
+                    <div class="section-heading">
+                        <span class="section-kicker">Contact</span>
+                        <h2>Send a message and it will be stored in MySQL.</h2>
+                    </div>
+                    <p class="max-w-xl text-lg leading-8 text-slate-600">
+                        The form talks to the Express backend, which writes submissions into the database through a clean controller and model flow.
+                    </p>
+                    <div class="space-y-4 text-slate-700">
+                        <div class="contact-row">
+                            <i data-lucide="mail"></i>
+                            <span>hello@yourname.com</span>
+                        </div>
+                        <div class="contact-row">
+                            <i data-lucide="link-2"></i>
+                            <span>linkedin.com/in/yourname</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="contact-form" class="content-card form-card space-y-4">
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <input name="name" type="text" placeholder="Your name" class="form-input" required>
+                        <input name="email" type="email" placeholder="Your email" class="form-input" required>
+                    </div>
+                    <textarea name="message" rows="5" placeholder="Your message" class="form-input" required></textarea>
+                    <button type="submit" class="primary-button w-full justify-center">Send Message</button>
+                    <p id="form-status" class="text-sm font-medium text-slate-600"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-500">
+        <p>&copy; <span id="year"></span> Abdallah. Full-stack portfolio with frontend and backend separation.</p>
+    </footer>
+
+    <script>
+        window.PORTFOLIO_API_BASE_URL = 'http://localhost:5000/api';
+    </script>
+    <script src="./js/config.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
