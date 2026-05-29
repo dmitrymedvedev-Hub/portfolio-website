@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Demo — Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="site-shell text-slate-900 antialiased">
+    <nav class="site-nav fixed inset-x-0 top-0 z-50">
+        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="index.html" class="brand-mark text-xl font-extrabold tracking-tight uppercase">Abdallah</a>
+            <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden" aria-label="Toggle navigation menu">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:hidden">
+            <div class="flex flex-col gap-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
+                <a href="index.html" class="mobile-link">Home</a>
+                <a href="projects.html" class="mobile-link">Projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 px-4">
+        <div class="mx-auto max-w-5xl">
+            <div id="demo-shell" class="content-card text-center">
+                <div class="section-kicker">Project Demo</div>
+                <h1 id="demo-title" class="text-2xl font-extrabold mt-4">Loading…</h1>
+                <p id="demo-desc" class="mt-2 text-slate-600"></p>
+                <div id="demo-frame-wrap" class="mt-6">
+                    <!-- iframe will be inserted here -->
+                </div>
+                <div id="demo-actions" class="mt-6 hidden">
+                    <a id="open-live" class="primary-button" target="_blank" rel="noreferrer">Open Live Demo</a>
+                    <a href="projects.html" class="secondary-button">Back to projects</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function safeParseData() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('data');
+            if (!raw) return null;
+            try {
+                return JSON.parse(decodeURIComponent(raw));
+            } catch (e) {
+                console.error('Failed to parse demo data', e);
+                return null;
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+        }
+
+        function safeExternalUrl(value) {
+            const candidate = String(value || '').trim();
+            if (!candidate) return '#';
+            if (candidate.startsWith('http://') || candidate.startsWith('https://')) return candidate;
+            return '#';
+        }
+
+        function renderDemo(data) {
+            const titleEl = document.getElementById('demo-title');
+            const descEl = document.getElementById('demo-desc');
+            const frameWrap = document.getElementById('demo-frame-wrap');
+            const actions = document.getElementById('demo-actions');
+            const openLive = document.getElementById('open-live');
+
+            if (!data) {
+                titleEl.textContent = 'Demo unavailable';
+                descEl.textContent = 'No demo information was provided for this project.';
+                return;
+            }
+
+            const title = escapeHtml(data.title || 'Project Demo');
+            const desc = escapeHtml(data.description || data.desc || '');
+            const demoUrl = safeExternalUrl(data.demoLink || data.demo || '');
+
+            titleEl.innerHTML = title;
+            descEl.innerHTML = desc;
+
+            if (demoUrl && demoUrl !== '#') {
+                // insert responsive iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = demoUrl;
+                iframe.className = 'w-full h-[520px] rounded-lg border';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.setAttribute('referrerpolicy', 'no-referrer');
+                frameWrap.innerHTML = '';
+                frameWrap.appendChild(iframe);
+
+                openLive.href = demoUrl;
+                actions.classList.remove('hidden');
+            } else {
+                frameWrap.innerHTML = '<div class="text-slate-600">No live demo URL available. You can open the repository or view details.</div>';
+                actions.classList.remove('hidden');
+                openLive.classList.add('hidden');
+            }
+        }
+
+        function setupNavigation() {
+            const button = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+
+            if (button && menu) {
+                button.addEventListener('click', () => menu.classList.toggle('hidden'));
+                menu.querySelectorAll('.mobile-link').forEach((link) => link.addEventListener('click', () => menu.classList.add('hidden')));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            const data = safeParseData();
+            renderDemo(data);
+        });
+    </script>
+</body>
+</html>

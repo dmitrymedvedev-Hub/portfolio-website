@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Source — Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="site-shell text-slate-900 antialiased">
+    <nav class="site-nav fixed inset-x-0 top-0 z-50">
+        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="index.html" class="brand-mark text-xl font-extrabold tracking-tight uppercase">Abdallah</a>
+            <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden" aria-label="Toggle navigation menu">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:hidden">
+            <div class="flex flex-col gap-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
+                <a href="index.html" class="mobile-link">Home</a>
+                <a href="projects.html" class="mobile-link">Projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 px-4">
+        <div class="mx-auto max-w-5xl">
+            <div id="source-shell" class="content-card">
+                <div class="section-kicker">Project Source</div>
+                <h1 id="source-title" class="text-2xl font-extrabold mt-4">Loading…</h1>
+                <p id="source-desc" class="mt-2 text-slate-600"></p>
+                <div id="source-body" class="mt-6 text-center"></div>
+                <div class="mt-6 text-center">
+                    <a id="open-repo" class="primary-button" target="_blank" rel="noreferrer">Open repository</a>
+                    <a href="projects.html" class="secondary-button ml-2">Back to projects</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function safeParseData() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('data');
+            if (!raw) return null;
+            try { return JSON.parse(decodeURIComponent(raw)); } catch (e) { console.error('Failed to parse source data', e); return null; }
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+        }
+
+        function safeExternalUrl(value) {
+            const candidate = String(value || '').trim();
+            if (!candidate) return '#';
+            if (candidate.startsWith('http://') || candidate.startsWith('https://')) return candidate;
+            return '#';
+        }
+
+        function renderSource(data) {
+            const titleEl = document.getElementById('source-title');
+            const descEl = document.getElementById('source-desc');
+            const body = document.getElementById('source-body');
+            const openRepo = document.getElementById('open-repo');
+
+            if (!data) {
+                titleEl.textContent = 'Source unavailable';
+                descEl.textContent = 'No source information provided.';
+                body.innerHTML = '';
+                openRepo.classList.add('hidden');
+                return;
+            }
+
+            const title = escapeHtml(data.title || 'Project Source');
+            const desc = escapeHtml(data.description || data.desc || '');
+            const src = safeExternalUrl(data.sourceLink || data.source || '');
+
+            titleEl.innerHTML = title;
+            descEl.innerHTML = desc;
+
+            if (src && src !== '#') {
+                // show embed where possible, otherwise provide direct link
+                const iframe = document.createElement('iframe');
+                iframe.src = src;
+                iframe.className = 'w-full h-[640px] rounded-lg border';
+                iframe.setAttribute('loading', 'lazy');
+                iframe.setAttribute('referrerpolicy', 'no-referrer');
+                body.innerHTML = '';
+                body.appendChild(iframe);
+                openRepo.href = src;
+                openRepo.classList.remove('hidden');
+            } else {
+                body.innerHTML = '<div class="text-slate-600">No repository link provided for this project.</div>';
+                openRepo.classList.add('hidden');
+            }
+        }
+
+        function setupNavigation() {
+            const button = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            if (button && menu) {
+                button.addEventListener('click', () => menu.classList.toggle('hidden'));
+                menu.querySelectorAll('.mobile-link').forEach((link) => link.addEventListener('click', () => menu.classList.add('hidden')));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            const data = safeParseData();
+            renderSource(data);
+        });
+    </script>
+</body>
+</html>

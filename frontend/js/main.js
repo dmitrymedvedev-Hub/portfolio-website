@@ -73,8 +73,11 @@ function renderProjects(projects) {
         const image = escapeHtml(p.imageUrl || p.image_url || fallbackProjects[0].imageUrl);
         const title = escapeHtml(p.title || 'Untitled Project');
         const desc = escapeHtml(p.description || p.desc || 'Project description not provided yet.');
-        const demo = escapeHtml(safeExternalUrl(p.demoLink || p.demo_link || '#'));
-        const source = escapeHtml(safeExternalUrl(p.sourceLink || p.source_link || '#'));
+        // create internal demo/source pages so we can show a consistent UI and handle errors
+        const demoPage = `demo.html?data=${dataParam}`;
+        const sourcePage = `source.html?data=${dataParam}`;
+        const demo = escapeHtml(demoPage);
+        const source = escapeHtml(sourcePage);
 
         // encode full project data so project.html can render details
         const dataParam = encodeURIComponent(JSON.stringify({ title: p.title, description: p.description, demoLink: p.demoLink || p.demo_link, sourceLink: p.sourceLink || p.source_link, imageUrl: p.imageUrl || p.image_url }));
