@@ -22,6 +22,19 @@ backend/
 Open `frontend/index.html` in a browser or serve the folder with a static dev server.
 The page loads projects from the API and sends contact form submissions to the backend.
 
+New pages added:
+- `frontend/projects.html` — standalone projects listing page.
+- `frontend/project.html` — project details page (opened from listing).
+- `frontend/404.html` and `frontend/500.html` — friendly error pages.
+
+Quick static serve example (using `http-server`):
+
+```bash
+cd frontend
+npx http-server -c-1 -p 8080
+# then open http://localhost:8080
+```
+
 ## Backend
 
 Install dependencies inside `backend` and start the API:
