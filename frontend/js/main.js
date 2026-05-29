@@ -54,27 +54,42 @@ function renderProjects(projects) {
         return;
     }
 
-    projectsGrid.innerHTML = projects.map((project) => `
+    projectsGrid.innerHTML = projects.map((project) => {
+        const p = project || {};
+        const image = escapeHtml(p.imageUrl || p.image_url || fallbackProjects[0].imageUrl);
+        const title = escapeHtml(p.title || 'Untitled Project');
+        const desc = escapeHtml(p.description || p.desc || 'Project description not provided yet.');
+        const demo = escapeHtml(p.demoLink || p.demo_link || '#');
+        const source = escapeHtml(p.sourceLink || p.source_link || '#');
+
+        // encode full project data so project.html can render details
+        const dataParam = encodeURIComponent(JSON.stringify({ title: p.title, description: p.description, demoLink: p.demoLink || p.demo_link, sourceLink: p.sourceLink || p.source_link, imageUrl: p.imageUrl || p.image_url }));
+
+        return `
         <article class="project-card">
             <div class="h-52 overflow-hidden bg-slate-100">
-                <img src="${escapeHtml(project.imageUrl || project.image_url || fallbackProjects[0].imageUrl)}"
-                    alt="${escapeHtml(project.title)}"
+                <img src="${image}"
+                    alt="${title}"
                     class="project-image h-full w-full object-cover">
             </div>
             <div class="project-body">
-                <h3 class="text-xl font-extrabold tracking-tight">${escapeHtml(project.title)}</h3>
-                <p class="mt-2 text-sm leading-7 text-slate-600">${escapeHtml(project.description || 'Project description not provided yet.')}</p>
+                <h3 class="text-xl font-extrabold tracking-tight">${title}</h3>
+                <p class="mt-2 text-sm leading-7 text-slate-600">${desc}</p>
                 <div class="project-links">
-                    <a class="project-link" href="${escapeHtml(project.demoLink || project.demo_link || '#')}" target="_blank" rel="noreferrer">
+                    <a class="project-link" href="${demo}" target="_blank" rel="noreferrer">
                         <i data-lucide="external-link"></i> Demo
                     </a>
-                    <a class="project-link secondary" href="${escapeHtml(project.sourceLink || project.source_link || '#')}" target="_blank" rel="noreferrer">
+                    <a class="project-link secondary" href="${source}" target="_blank" rel="noreferrer">
                         <i data-lucide="github"></i> Source
+                    </a>
+                    <a class="project-link" href="project.html?data=${dataParam}" title="View details">
+                        <i data-lucide="eye"></i> Details
                     </a>
                 </div>
             </div>
         </article>
-    `).join('');
+    `;
+    }).join('');
 
     lucide.createIcons();
 }
@@ -94,13 +109,21 @@ async function loadProjects() {
         const response = await fetch(`${apiBaseUrl}/portfolio/projects`);
 
         if (!response.ok) {
-            throw new Error('Failed to load projects');
+            const text = await response.text().catch(() => '');
+            throw new Error('Failed to load projects: ' + (text || response.statusText));
         }
 
         const payload = await response.json();
         renderProjects(payload.data || []);
     } catch (error) {
-        renderProjects(fallbackProjects);
+        projectsGrid.innerHTML = `
+            <div class="content-card md:col-span-2 lg:col-span-3 text-center text-rose-600">
+                Unable to load projects from backend — showing demo projects instead.
+            </div>
+        `;
+        console.error('Projects load error:', error);
+        // show fallback after a brief delay for better UX
+        setTimeout(() => renderProjects(fallbackProjects), 350);
     }
 }
 

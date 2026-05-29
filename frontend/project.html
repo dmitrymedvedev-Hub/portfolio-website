@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="site-shell text-slate-900 antialiased">
+    <nav class="site-nav fixed inset-x-0 top-0 z-50">
+        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="index.html" class="brand-mark text-xl font-extrabold tracking-tight uppercase">Abdallah</a>
+            <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 px-4">
+        <div class="mx-auto max-w-4xl">
+            <div id="project-detail" class="content-card"></div>
+            <div class="mt-6 text-center">
+                <a href="projects.html" class="secondary-button">Back to projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-500">
+        <p>&copy; <span id="year"></span> Abdallah.</p>
+    </footer>
+
+    <script>
+        function safeParseData() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('data');
+            if (!raw) return null;
+            try {
+                return JSON.parse(decodeURIComponent(raw));
+            } catch (e) {
+                console.error('Failed to parse project data', e);
+                return null;
+            }
+        }
+
+        function renderProjectDetail(data) {
+            const container = document.getElementById('project-detail');
+            if (!container) return;
+
+            if (!data) {
+                container.innerHTML = '<h2 class="text-2xl font-extrabold">Project not found</h2><p class="text-slate-600 mt-2">No project data was provided. Return to the projects listing.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="grid gap-6 lg:grid-cols-[1fr_1fr] items-start">
+                    <div>
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="${data.imageUrl || data.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=900'}" alt="${data.title || 'Project image'}" class="w-full object-cover h-64">
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-extrabold">${data.title || 'Untitled'}</h1>
+                        <p class="mt-3 text-slate-600">${data.description || data.desc || 'No description provided.'}</p>
+                        <div class="project-links mt-6">
+                            <a class="project-link" href="${data.demoLink || data.demo || '#'}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i> Demo</a>
+                            <a class="project-link secondary" href="${data.sourceLink || data.source || '#'}" target="_blank" rel="noreferrer"><i data-lucide="github"></i> Source</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = safeParseData();
+            renderProjectDetail(data);
+            document.getElementById('year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
