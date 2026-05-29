@@ -40,6 +40,20 @@ function escapeHtml(value) {
         .replaceAll("'", '&#39;');
 }
 
+function safeExternalUrl(value) {
+    const candidate = String(value || '').trim();
+
+    if (!candidate) {
+        return '#';
+    }
+
+    if (candidate.startsWith('http://') || candidate.startsWith('https://')) {
+        return candidate;
+    }
+
+    return '#';
+}
+
 function renderProjects(projects) {
     if (!projectsGrid) {
         return;
@@ -59,8 +73,8 @@ function renderProjects(projects) {
         const image = escapeHtml(p.imageUrl || p.image_url || fallbackProjects[0].imageUrl);
         const title = escapeHtml(p.title || 'Untitled Project');
         const desc = escapeHtml(p.description || p.desc || 'Project description not provided yet.');
-        const demo = escapeHtml(p.demoLink || p.demo_link || '#');
-        const source = escapeHtml(p.sourceLink || p.source_link || '#');
+        const demo = escapeHtml(safeExternalUrl(p.demoLink || p.demo_link || '#'));
+        const source = escapeHtml(safeExternalUrl(p.sourceLink || p.source_link || '#'));
 
         // encode full project data so project.html can render details
         const dataParam = encodeURIComponent(JSON.stringify({ title: p.title, description: p.description, demoLink: p.demoLink || p.demo_link, sourceLink: p.sourceLink || p.source_link, imageUrl: p.imageUrl || p.image_url }));

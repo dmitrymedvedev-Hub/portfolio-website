@@ -4,18 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>404 — Not Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body class="site-shell text-slate-900 antialiased">
-    <main class="min-h-screen flex items-center justify-center px-4">
-        <div class="text-center">
-            <h1 class="text-6xl font-extrabold">404</h1>
-            <p class="mt-4 text-xl text-slate-600">Page not found. The resource may have moved or the URL is incorrect.</p>
-            <div class="mt-6">
-                <a href="index.html" class="primary-button">Return home</a>
+    <main class="error-shell">
+        <section class="content-card error-card">
+            <div class="section-kicker">Navigation Error</div>
+            <h1 class="error-code mt-4">404</h1>
+            <p class="mt-4 text-lg text-slate-600">The page you requested does not exist or was moved.</p>
+            <div class="mt-8 flex justify-center gap-3">
+                <a href="index.html" class="primary-button">Go Home</a>
+                <a href="projects.html" class="secondary-button">View Projects</a>
             </div>
-        </div>
+        </section>
     </main>
 </body>
 </html>

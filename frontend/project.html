@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/styles.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -15,6 +16,15 @@
             <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="projects.html" class="nav-link">Projects</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden" aria-label="Toggle navigation menu">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:hidden">
+            <div class="flex flex-col gap-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
+                <a href="index.html" class="mobile-link">Home</a>
+                <a href="projects.html" class="mobile-link">Projects</a>
             </div>
         </div>
     </nav>
@@ -33,6 +43,28 @@
     </footer>
 
     <script>
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function safeUrl(value) {
+            const candidate = String(value || '').trim();
+            if (!candidate) {
+                return '#';
+            }
+
+            if (candidate.startsWith('http://') || candidate.startsWith('https://')) {
+                return candidate;
+            }
+
+            return '#';
+        }
+
         function safeParseData() {
             const params = new URLSearchParams(window.location.search);
             const raw = params.get('data');
@@ -54,19 +86,25 @@
                 return;
             }
 
+            const image = escapeHtml(data.imageUrl || data.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=900');
+            const title = escapeHtml(data.title || 'Untitled');
+            const description = escapeHtml(data.description || data.desc || 'No description provided.');
+            const demoLink = safeUrl(data.demoLink || data.demo || '#');
+            const sourceLink = safeUrl(data.sourceLink || data.source || '#');
+
             container.innerHTML = `
                 <div class="grid gap-6 lg:grid-cols-[1fr_1fr] items-start">
                     <div>
                         <div class="rounded-lg overflow-hidden shadow-lg">
-                            <img src="${data.imageUrl || data.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=900'}" alt="${data.title || 'Project image'}" class="w-full object-cover h-64">
+                            <img src="${image}" alt="${title}" class="w-full object-cover h-64">
                         </div>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-extrabold">${data.title || 'Untitled'}</h1>
-                        <p class="mt-3 text-slate-600">${data.description || data.desc || 'No description provided.'}</p>
+                        <h1 class="text-3xl font-extrabold">${title}</h1>
+                        <p class="mt-3 text-slate-600">${description}</p>
                         <div class="project-links mt-6">
-                            <a class="project-link" href="${data.demoLink || data.demo || '#'}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i> Demo</a>
-                            <a class="project-link secondary" href="${data.sourceLink || data.source || '#'}" target="_blank" rel="noreferrer"><i data-lucide="github"></i> Source</a>
+                            <a class="project-link" href="${demoLink}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i> Demo</a>
+                            <a class="project-link secondary" href="${sourceLink}" target="_blank" rel="noreferrer"><i data-lucide="github"></i> Source</a>
                         </div>
                     </div>
                 </div>
@@ -75,9 +113,25 @@
             lucide.createIcons();
         }
 
+        function setupNavigation() {
+            const button = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+
+            if (button && menu) {
+                button.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+
+                menu.querySelectorAll('.mobile-link').forEach((link) => {
+                    link.addEventListener('click', () => menu.classList.add('hidden'));
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const data = safeParseData();
             renderProjectDetail(data);
+            setupNavigation();
             document.getElementById('year').textContent = new Date().getFullYear();
         });
     </script>
