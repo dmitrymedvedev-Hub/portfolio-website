@@ -68,45 +68,47 @@ function renderProjects(projects) {
         return;
     }
 
-    projectsGrid.innerHTML = projects.map((project) => {
-        const p = project || {};
-        const image = escapeHtml(p.imageUrl || p.image_url || fallbackProjects[0].imageUrl);
-        const title = escapeHtml(p.title || 'Untitled Project');
-        const desc = escapeHtml(p.description || p.desc || 'Project description not provided yet.');
-        // create internal demo/source pages so we can show a consistent UI and handle errors
-        const demoPage = `demo.html?data=${dataParam}`;
-        const sourcePage = `source.html?data=${dataParam}`;
-        const demo = escapeHtml(demoPage);
-        const source = escapeHtml(sourcePage);
+        projectsGrid.innerHTML = projects.map((project) => {
+            const p = project || {};
+            const image = escapeHtml(p.imageUrl || p.image_url || fallbackProjects[0].imageUrl);
+            const title = escapeHtml(p.title || 'Untitled Project');
+            const desc = escapeHtml(p.description || p.desc || '');
+            const hasDemo = Boolean(p.demoLink || p.demo_link);
+            const hasSource = Boolean(p.sourceLink || p.source_link);
 
-        // encode full project data so project.html can render details
-        const dataParam = encodeURIComponent(JSON.stringify({ title: p.title, description: p.description, demoLink: p.demoLink || p.demo_link, sourceLink: p.sourceLink || p.source_link, imageUrl: p.imageUrl || p.image_url }));
+            // encode full project data so other pages can render details
+            const dataParam = encodeURIComponent(JSON.stringify({ title: p.title, description: p.description, demoLink: p.demoLink || p.demo_link, sourceLink: p.sourceLink || p.source_link, imageUrl: p.imageUrl || p.image_url }));
 
-        return `
-        <article class="project-card">
-            <div class="h-52 overflow-hidden bg-slate-100">
-                <img src="${image}"
-                    alt="${title}"
-                    class="project-image h-full w-full object-cover">
-            </div>
-            <div class="project-body">
-                <h3 class="text-xl font-extrabold tracking-tight">${title}</h3>
-                <p class="mt-2 text-sm leading-7 text-slate-600">${desc}</p>
-                <div class="project-links">
-                    <a class="project-link" href="${demo}" target="_blank" rel="noreferrer">
-                        <i data-lucide="external-link"></i> Demo
-                    </a>
-                    <a class="project-link secondary" href="${source}" target="_blank" rel="noreferrer">
-                        <i data-lucide="github"></i> Source
-                    </a>
-                    <a class="project-link" href="project.html?data=${dataParam}" title="View details">
-                        <i data-lucide="eye"></i> Details
-                    </a>
+            const demoPage = `demo.html?data=${dataParam}`;
+            const sourcePage = `source.html?data=${dataParam}`;
+            const detailsPage = `project.html?data=${dataParam}`;
+
+            return `
+            <article class="project-tile reveal">
+                <div class="project-media">
+                    <img src="${image}" alt="${title}">
+                    <div class="project-media-badge">${hasDemo ? 'Live demo ready' : 'Preview only'}</div>
                 </div>
-            </div>
-        </article>
-    `;
-    }).join('');
+                <div class="project-card-body">
+                    <div class="project-card-topline">
+                        <span class="project-card-kicker">Featured Project</span>
+                        <span class="project-card-dot"></span>
+                    </div>
+                    <h3>${title}</h3>
+                    <p>${desc}</p>
+                    <div class="project-meta-row">
+                        <span class="project-meta-chip"><i data-lucide="sparkles"></i> Modern UI</span>
+                        <span class="project-meta-chip"><i data-lucide="shield-check"></i> Responsive</span>
+                    </div>
+                    <div class="project-actions">
+                        <a class="project-action-button project-action-primary" href="${detailsPage}"><i data-lucide="arrow-right"></i> Read more</a>
+                        <a class="project-action-button" href="${demoPage}" ${hasDemo ? '' : 'aria-disabled="true" tabindex="-1"'}><i data-lucide="external-link"></i> Demo</a>
+                        <a class="project-action-button" href="${sourcePage}" ${hasSource ? '' : 'aria-disabled="true" tabindex="-1"'}><i data-lucide="github"></i> Source</a>
+                    </div>
+                </div>
+            </article>
+        `;
+        }).join('');
 
     lucide.createIcons();
 }
@@ -146,16 +148,66 @@ async function loadProjects() {
 
 function setupNavigation() {
     if (mobileMenuButton && mobileMenu) {
+        const menuIcon = '<i data-lucide="menu"></i>';
+        const closeIcon = '<i data-lucide="x"></i>';
+        const openMenu = () => {
+            mobileMenu.classList.remove('hidden', 'is-closing');
+            mobileMenu.classList.add('is-open');
+            mobileMenu.setAttribute('aria-hidden', 'false');
+            mobileMenuButton.setAttribute('aria-expanded', 'true');
+            mobileMenuButton.innerHTML = closeIcon;
+            document.body.classList.add('menu-open');
+            lucide.createIcons();
+        };
+
+        const closeMenu = () => {
+            if (!mobileMenu.classList.contains('is-open')) {
+                return;
+            }
+
+            mobileMenu.classList.remove('is-open');
+            mobileMenu.classList.add('is-closing');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+            mobileMenuButton.innerHTML = menuIcon;
+            document.body.classList.remove('menu-open');
+            lucide.createIcons();
+
+            window.setTimeout(() => {
+                if (!mobileMenu.classList.contains('is-open')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('is-closing');
+                }
+            }, 220);
+        };
+
+        mobileMenuButton.classList.add('nav-toggle-button');
+        mobileMenuButton.innerHTML = menuIcon;
+
         mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('is-open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        mobileMenu.addEventListener('click', (event) => {
+            if (event.target === mobileMenu) {
+                closeMenu();
+            }
+        });
+
+        const sidebarClose = mobileMenu.querySelector('.sidebar-close');
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeMenu);
+        }
+
+        mobileMenu.querySelectorAll('.mobile-link').forEach((link) => {
+            link.addEventListener('click', closeMenu);
         });
     }
 
-    document.querySelectorAll('.mobile-link').forEach((link) => {
-        link.addEventListener('click', () => {
-            mobileMenu?.classList.add('hidden');
-        });
-    });
 }
 
 function setupContactForm() {

@@ -11,20 +11,29 @@
 </head>
 <body class="site-shell text-slate-900 antialiased">
     <nav class="site-nav fixed inset-x-0 top-0 z-50">
-        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="index.html" class="brand-mark text-xl font-extrabold tracking-tight uppercase">Abdallah</a>
-            <div class="hidden items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600 md:flex">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="projects.html" class="nav-link">Projects</a>
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="nav-inner flex h-16 items-center justify-between">
+                <a href="index.html" class="brand-mark text-xl font-extrabold tracking-tight uppercase">Abdallah</a>
+
+                <div class="nav-links hidden md:flex text-sm font-semibold uppercase tracking-[0.08em]">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="projects.html" class="nav-link">Projects</a>
+                </div>
+
+                <div class="nav-cta hidden md:flex">
+                    <a href="projects.html" class="primary-button">Projects</a>
+                </div>
+
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg" aria-label="Toggle navigation menu">
+                    <i data-lucide="menu"></i>
+                </button>
             </div>
-            <button id="mobile-menu-button" class="md:hidden" aria-label="Toggle navigation menu">
-                <i data-lucide="menu"></i>
-            </button>
-        </div>
-        <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:hidden">
-            <div class="flex flex-col gap-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-600">
-                <a href="index.html" class="mobile-link">Home</a>
-                <a href="projects.html" class="mobile-link">Projects</a>
+
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="flex flex-col gap-3 text-sm font-semibold uppercase tracking-[0.12em]">
+                    <a href="index.html" class="mobile-link">Home</a>
+                    <a href="projects.html" class="mobile-link">Projects</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -93,24 +102,47 @@
             const sourceLink = safeUrl(data.sourceLink || data.source || '#');
 
             container.innerHTML = `
-                <div class="grid gap-6 lg:grid-cols-[1fr_1fr] items-start">
-                    <div>
-                        <div class="rounded-lg overflow-hidden shadow-lg">
-                            <img src="${image}" alt="${title}" class="w-full object-cover h-64">
+                <header class="project-hero">
+                    <div style="position:relative;">
+                        <img src="${image}" alt="${title}" class="w-full h-80 object-cover">
+                        <div style="position:absolute;left:0;right:0;bottom:0;padding:1.5rem;background:linear-gradient(180deg,rgba(0,0,0,0) 0%, rgba(2,6,23,0.6) 60%);">
+                            <h1 style="color:white;font-size:clamp(1.5rem,4vw,2.25rem);margin:0;font-weight:800;">${title}</h1>
                         </div>
                     </div>
+                </header>
+                <section class="project-content grid gap-8 lg:grid-cols-[1fr_320px] mt-6">
                     <div>
-                        <h1 class="text-3xl font-extrabold">${title}</h1>
-                        <p class="mt-3 text-slate-600">${description}</p>
-                        <div class="project-links mt-6">
-                            <a class="project-link" href="${demoLink}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i> Demo</a>
-                            <a class="project-link secondary" href="${sourceLink}" target="_blank" rel="noreferrer"><i data-lucide="github"></i> Source</a>
+                        <div class="content-card">
+                            <h2 class="text-xl font-extrabold">Overview</h2>
+                            <p class="mt-3 text-slate-700">${description}</p>
+                        </div>
+                        <div class="content-card mt-4">
+                            <h3 class="text-lg font-semibold">Details</h3>
+                            <ul class="mt-3 text-slate-700">
+                                <li><strong>Demo:</strong> ${demoLink !== '#' ? '<a href="' + demoLink + '" target="_blank" rel="noreferrer">Open demo</a>' : 'Not available'}</li>
+                                <li class="mt-2"><strong>Source:</strong> ${sourceLink !== '#' ? '<a href="' + sourceLink + '" target="_blank" rel="noreferrer">View repository</a>' : 'Not available'}</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
+                    <aside>
+                        <div class="content-card">
+                            <h4 class="font-bold">Project Info</h4>
+                            <div class="mt-3 text-slate-700">
+                                <p><strong>Title</strong><br>${title}</p>
+                            </div>
+                            <div class="mt-4">
+                                <a class="primary-button w-full" href="${demoLink}" target="_blank" rel="noreferrer">Open Demo</a>
+                                <a class="secondary-button w-full mt-3" href="${sourceLink}" target="_blank" rel="noreferrer">Open Source</a>
+                                <a class="secondary-button w-full mt-3" href="projects.html">Back to projects</a>
+                            </div>
+                        </div>
+                    </aside>
+                </section>
             `;
 
-            lucide.createIcons();
+            if (window.lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
         }
 
         function setupNavigation() {
